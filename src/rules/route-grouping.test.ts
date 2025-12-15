@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
 import { routeGrouping } from './route-grouping';
-import { describe, it, afterAll } from 'vitest';
+import * as parser from '@typescript-eslint/parser';
 
 // Check if RuleTester supports dependency injection for testing framework, 
 // otherwise rely on globals.
@@ -9,11 +9,11 @@ import { describe, it, afterAll } from 'vitest';
 
 const ruleTester = new RuleTester({
   languageOptions: {
-    parser: require('@typescript-eslint/parser'),
+    parser,
   },
 });
 
-ruleTester.run('route-grouping', routeGrouping as any, {
+ruleTester.run('route-grouping', routeGrouping as unknown as import('eslint').Rule.RuleModule, {
   valid: [
     // Basic grouping
     `
