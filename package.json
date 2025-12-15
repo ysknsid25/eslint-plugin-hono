@@ -29,6 +29,10 @@
         "hono"
     ],
     "author": "Kanon",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ysknsid25/eslint-plugin-hono.git"
+    },
     "license": "MIT",
     "devDependencies": {
         "@eslint/js": "^9.39.2",
