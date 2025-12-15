@@ -1,0 +1,50 @@
+{
+    "name": "eslint-plugin-hono",
+    "version": "0.0.0",
+    "description": "ESLint plugin for Hono",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "unbuild",
+        "test": "vitest run",
+        "test:coverage": "vitest run --coverage",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
+    },
+    "keywords": [
+        "eslint",
+        "eslintplugin",
+        "eslint-plugin",
+        "hono"
+    ],
+    "author": "Kanon",
+    "license": "MIT",
+    "devDependencies": {
+        "@eslint/js": "^9.39.2",
+        "@types/node": "^22.10.1",
+        "@typescript-eslint/utils": "^8.17.0",
+        "@vitest/coverage-v8": "^2.1.8",
+        "eslint": "^9.16.0",
+        "eslint-define-config": "^2.1.0",
+        "globals": "^16.5.0",
+        "hono": "^4.11.1",
+        "typescript": "^5.7.2",
+        "typescript-eslint": "^8.49.0",
+        "unbuild": "^2.0.0",
+        "vitest": "^2.1.8"
+    },
+    "peerDependencies": {
+        "eslint": "^8.0.0 || ^9.0.0"
+    }
+}
