@@ -18,7 +18,8 @@ Add `hono` to the plugins section of your `.eslintrc` configuration file. You ca
         "hono"
     ],
     "rules": {
-        "hono/route-grouping": ["error", {"order": ["use", "all", "get", "post", "put", "patch", "delete", "options", "on"]}]
+        "hono/route-grouping": ["error", {"order": ["use", "all", "get", "post", "put", "patch", "delete", "options", "on"]}],
+        "hono/prefer-http-exception": "warn"
     }
 }
 ```
@@ -27,7 +28,8 @@ Add `hono` to the plugins section of your `.eslintrc` configuration file. You ca
 
 | Rule | ⚠️ warn | 🚨 error | 🔧 fix |
 | :--- | :---: | :---: | :---: |
-| [route-grouping](#route-grouping) | | ✅ | ✅ |
+| [route-grouping](#hono-route-grouping) | | ✅ | ✅ |
+| [prefer-http-exception](#hono-prefer-http-exception) | ✅ | | |
 
 ### hono/route-grouping
 
@@ -93,6 +95,30 @@ app.get('/path1', (c) => c.text('get'));
 app.post('/path1', (c) => c.text('post'));
 ```
 
-# License
+### hono/prefer-http-exception
 
-Made by [Kanon](https://github.com/ysknsid25). Publish under [MIT License](https://github.com/ysknsid25/eslint-plugin-citty/blob/master/LICENSE).
+Suggest using `HTTPException` instead of generic `Error` for HTTP errors.
+
+This rule detects when a standard `Error` is thrown with a message that corresponds to a standard HTTP status code (e.g., "Not Found", "Unauthorized"). In Hono applications, it is better to use `HTTPException` to return proper HTTP status codes.
+
+#### Examples
+
+**Incorrect**
+
+```typescript
+throw new Error('Not Found');
+throw new Error('Unauthorized');
+throw new Error('Bad Request');
+```
+
+**Correct**
+
+```typescript
+import { HTTPException } from 'hono/http-exception';
+
+throw new HTTPException(404, { message: 'Not Found' });
+throw new HTTPException(401, { message: 'Unauthorized' });
+throw new HTTPException(400, { message: 'Bad Request' });
+```
+
+## Verifying the Rule (Playground)
