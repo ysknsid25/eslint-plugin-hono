@@ -20,7 +20,8 @@ Add `hono` to the plugins section of your `.eslintrc` configuration file. You ca
     "rules": {
         "hono/route-grouping": ["error", {"order": ["use", "all", "get", "post", "put", "patch", "delete", "options", "on"]}],
         "hono/prefer-http-exception": "warn",
-        "hono/param-name-mismatch": "error"
+        "hono/param-name-mismatch": "error",
+        "hono/no-multiple-next": "error"
     }
 }
 ```
@@ -32,6 +33,7 @@ Add `hono` to the plugins section of your `.eslintrc` configuration file. You ca
 | [route-grouping](#hono-route-grouping) | | ✅ | ✅ |
 | [prefer-http-exception](#hono-prefer-http-exception) | ✅ | | |
 | [param-name-mismatch](#hono-param-name-mismatch) | | ✅ | |
+| [no-multiple-next](#hono-no-multiple-next) | | ✅ | |
 
 ### hono/route-grouping
 
@@ -151,4 +153,50 @@ app.get('/posts/:postId', (c) => {
 });
 ```
 
-## Verifying the Rule (Playground)
+### hono/no-multiple-next
+
+Disallow multiple calls to `next()` in a single middleware execution path.
+
+Hono middleware relies on `await next()` to pass control to the next middleware. Calling `next()` multiple times in the same middleware function will cause a runtime error ("next() called multiple times"). This rule detects and prevents such patterns.
+
+#### Examples
+
+**Incorrect**
+
+```typescript
+const middleware = async (c, next) => {
+  await next();
+  await next(); // Error
+};
+```
+
+```typescript
+const middleware = async (c, next) => {
+  if (condition) {
+    await next();
+  }
+  await next(); // Error if condition is true
+};
+```
+
+**Correct**
+
+```typescript
+const middleware = async (c, next) => {
+  await next();
+};
+```
+
+```typescript
+const middleware = async (c, next) => {
+  if (condition) {
+    await next();
+  } else {
+    await next();
+  }
+};
+```
+
+# License
+
+Made by [Kanon](https://github.com/ysknsid25). Publish under [MIT License](https://github.com/ysknsid25/eslint-plugin-citty/blob/master/LICENSE).
