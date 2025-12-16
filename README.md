@@ -2,6 +2,14 @@
 
 🔥 ESLint plugin for [Hono](https://hono.dev/)
 
+## ⚠️ Still in alpha version ⚠️
+
+In order for this plugin to become a major release, it's extremely important that you experiment with it. 
+
+Please try it out and incorporate it into your Hono project. 
+
+Please also create issues with any bugs, improvement requests, and new feature suggestions.
+
 ## Installation
 
 ```bash
