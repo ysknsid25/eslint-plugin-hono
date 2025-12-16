@@ -19,7 +19,7 @@ const rules = {
 const configs = {
   recommended: {
     plugins: {
-      hono: { rules },
+      hono: rules,
     },
     rules: {
       'hono/route-grouping': [
