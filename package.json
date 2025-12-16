@@ -1,6 +1,6 @@
 {
     "name": "eslint-plugin-hono",
-    "version": "0.0.1-alpha.3",
+    "version": "0.0.1-alpha.4",
     "description": "ESLint plugin for Hono",
     "main": "./dist/index.cjs",
     "module": "./dist/index.mjs",
