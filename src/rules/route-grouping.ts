@@ -53,11 +53,11 @@ export const routeGrouping = createRule<
     ],
     messages: {
       routeGroup:
-        "Routes for path '{{path}}' on instance '{{instance}}' should be grouped together.",
+        'Routes for path \'{{path}}\' on instance \'{{instance}}\' should be grouped together.',
       methodOrder:
-        "Method '{{method}}' should be before '{{prevMethod}}' for path '{{path}}'.",
+        'Method \'{{method}}\' should be before \'{{prevMethod}}\' for path \'{{path}}\'.',
       instanceGroup:
-        "All routes for '{{instance}}' should be defined together before defining routes for another instance.",
+        'All routes for \'{{instance}}\' should be defined together before defining routes for another instance.',
     },
   },
   defaultOptions: [
@@ -69,7 +69,7 @@ export const routeGrouping = createRule<
     const order = context.options[0]?.order || DEFAULT_ORDER;
 
     function getRootIdentifierName(
-      node: TSESTree.MemberExpression
+      node: TSESTree.MemberExpression,
     ): string | null {
       let current = node.object;
       while (current.type === 'MemberExpression') {
@@ -82,15 +82,15 @@ export const routeGrouping = createRule<
     }
 
     function getMethodChain(
-      node: TSESTree.CallExpression
+      node: TSESTree.CallExpression,
     ): { name: string; node: TSESTree.MemberExpression }[] {
       const methods: { name: string; node: TSESTree.MemberExpression }[] = [];
       let current: TSESTree.Expression | TSESTree.Super = node;
 
       while (current.type === 'CallExpression') {
         if (
-          current.callee.type === 'MemberExpression' &&
-          current.callee.property.type === 'Identifier'
+          current.callee.type === 'MemberExpression'
+          && current.callee.property.type === 'Identifier'
         ) {
           const methodName = current.callee.property.name;
           if (order.includes(methodName)) {
@@ -102,7 +102,8 @@ export const routeGrouping = createRule<
         }
         if (current.callee.type === 'MemberExpression') {
           current = current.callee.object;
-        } else {
+        }
+        else {
           break;
         }
       }
@@ -110,32 +111,33 @@ export const routeGrouping = createRule<
     }
 
     function getRoutePath(node: TSESTree.CallExpression): string | null {
-        const stack: TSESTree.CallExpression[] = [];
-        let temp: TSESTree.Expression | TSESTree.Super = node;
-        while (temp.type === 'CallExpression') {
-          stack.push(temp);
-          if (temp.callee.type === 'MemberExpression') {
-            temp = temp.callee.object;
-          } else {
-            break;
-          }
+      const stack: TSESTree.CallExpression[] = [];
+      let temp: TSESTree.Expression | TSESTree.Super = node;
+      while (temp.type === 'CallExpression') {
+        stack.push(temp);
+        if (temp.callee.type === 'MemberExpression') {
+          temp = temp.callee.object;
         }
-  
-        while (stack.length > 0) {
-          const call = stack.pop()!;
-          if (
-            call.callee.type === 'MemberExpression' &&
-            call.callee.property.type === 'Identifier' &&
-            order.includes(call.callee.property.name)
-          ) {
-            if (call.arguments.length > 0 && call.arguments[0].type === 'Literal') {
-              return String(call.arguments[0].value);
-            }
-          }
+        else {
+          break;
         }
-  
-        return null;
       }
+
+      while (stack.length > 0) {
+        const call = stack.pop()!;
+        if (
+          call.callee.type === 'MemberExpression'
+          && call.callee.property.type === 'Identifier'
+          && order.includes(call.callee.property.name)
+        ) {
+          if (call.arguments.length > 0 && call.arguments[0].type === 'Literal') {
+            return String(call.arguments[0].value);
+          }
+        }
+      }
+
+      return null;
+    }
 
     function checkBlock(node: TSESTree.BlockStatement | TSESTree.Program) {
       const routes: RouteDefinition[] = [];
@@ -145,11 +147,11 @@ export const routeGrouping = createRule<
         if (statement.type === 'VariableDeclaration') {
           for (const decl of statement.declarations) {
             if (
-              decl.init &&
-              decl.init.type === 'NewExpression' &&
-              decl.init.callee.type === 'Identifier' &&
-              decl.init.callee.name === 'Hono' &&
-              decl.id.type === 'Identifier'
+              decl.init
+              && decl.init.type === 'NewExpression'
+              && decl.init.callee.type === 'Identifier'
+              && decl.init.callee.name === 'Hono'
+              && decl.id.type === 'Identifier'
             ) {
               honoInstances.add(decl.id.name);
             }
@@ -157,8 +159,8 @@ export const routeGrouping = createRule<
         }
 
         if (
-          statement.type !== 'ExpressionStatement' ||
-          statement.expression.type !== 'CallExpression'
+          statement.type !== 'ExpressionStatement'
+          || statement.expression.type !== 'CallExpression'
         ) {
           continue;
         }
@@ -176,10 +178,10 @@ export const routeGrouping = createRule<
         if (methods.length === 0) {
           continue;
         }
-        
+
         const path = getRoutePath(callExpr);
         if (path === null) {
-            continue;
+          continue;
         }
 
         routes.push({
