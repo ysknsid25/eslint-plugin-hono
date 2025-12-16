@@ -57,7 +57,7 @@ ruleTester.run('param-name-mismatch', paramNameMismatch as unknown as import('es
         await next();
         const id = c.req.param('id');
       });
-    `
+    `,
   ],
   invalid: [
     // Mismatch param name
@@ -71,7 +71,7 @@ ruleTester.run('param-name-mismatch', paramNameMismatch as unknown as import('es
       `,
       errors: [
         {
-          message: "Parameter 'id' is not defined in the route path '/posts/:postId'. Expected one of: postId",
+          message: 'Parameter \'id\' is not defined in the route path \'/posts/:postId\'. Expected one of: postId',
         },
       ],
     },
@@ -86,7 +86,7 @@ ruleTester.run('param-name-mismatch', paramNameMismatch as unknown as import('es
       `,
       errors: [
         {
-          message: "Parameter 'userIk' is not defined in the route path '/users/:userId'. Expected one of: userId",
+          message: 'Parameter \'userIk\' is not defined in the route path \'/users/:userId\'. Expected one of: userId',
         },
       ],
     },
@@ -101,7 +101,7 @@ ruleTester.run('param-name-mismatch', paramNameMismatch as unknown as import('es
       `,
       errors: [
         {
-          message: "Parameter 'id' is not defined in the route path '/hello'. Expected one of: (none)",
+          message: 'Parameter \'id\' is not defined in the route path \'/hello\'. Expected one of: (none)',
         },
       ],
     },
@@ -114,7 +114,7 @@ ruleTester.run('param-name-mismatch', paramNameMismatch as unknown as import('es
       `,
       errors: [
         {
-          message: "Parameter 'id' is not defined in the route path '/posts/:postId/comments/:commentId'. Expected one of: postId, commentId",
+          message: 'Parameter \'id\' is not defined in the route path \'/posts/:postId/comments/:commentId\'. Expected one of: postId, commentId',
         },
       ],
     },

@@ -14,11 +14,11 @@ ruleTester.run('prefer-http-exception', preferHttpException as unknown as import
     `throw new Error('Something went wrong');`,
     `throw new Error('Database connection failed');`,
     `throw new Error('Invalid input');`,
-    
+
     // Correct usage of HTTPException
     `import { HTTPException } from 'hono/http-exception'; throw new HTTPException(404, { message: 'Not Found' });`,
     `throw new HTTPException(401, { message: 'Unauthorized' });`,
-    
+
     // Dynamic messages (ignored)
     `const msg = 'Not Found'; throw new Error(msg);`,
     `throw new Error('Not ' + 'Found');`,

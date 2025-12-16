@@ -52,7 +52,7 @@ ruleTester.run('no-multiple-next', noMultipleNext as unknown as import('eslint')
         await next(); // This is technically unreachable code, but if reachable it would be double next. 
                       // ESLint CodePath handles reachability.
       };
-    `
+    `,
   ],
   invalid: [
     // Simple double call

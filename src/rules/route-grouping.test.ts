@@ -2,7 +2,7 @@ import { RuleTester } from 'eslint';
 import { routeGrouping } from './route-grouping';
 import * as parser from '@typescript-eslint/parser';
 
-// Check if RuleTester supports dependency injection for testing framework, 
+// Check if RuleTester supports dependency injection for testing framework,
 // otherwise rely on globals.
 // eslint v9 RuleTester doesn't expose it/describe override statically like @typescript-eslint/rule-tester.
 // But it usually works if globals are present.
@@ -128,6 +128,6 @@ ruleTester.run('route-grouping', routeGrouping as unknown as import('eslint').Ru
         app.delete('/a', c => c.text('a'));
       `,
       errors: [{ messageId: 'routeGroup' }],
-    }
+    },
   ],
 });

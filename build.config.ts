@@ -1,8 +1,8 @@
-import { defineBuildConfig } from 'unbuild'
+import { defineBuildConfig } from 'unbuild';
 
 export default defineBuildConfig({
   entries: [
-    'src/index'
+    'src/index',
   ],
   declaration: true,
   rollup: {
@@ -10,6 +10,6 @@ export default defineBuildConfig({
   },
   externals: [
     'eslint',
-    '@typescript-eslint/utils'
-  ]
-})
+    '@typescript-eslint/utils',
+  ],
+});

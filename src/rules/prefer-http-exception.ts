@@ -65,13 +65,13 @@ export const preferHttpException = createRule<Options, MessageIds>({
       ThrowStatement(node) {
         const argument = node.argument;
         if (
-          argument &&
-          argument.type === 'NewExpression' &&
-          argument.callee.type === 'Identifier' &&
-          argument.callee.name === 'Error' &&
-          argument.arguments.length === 1 &&
-          argument.arguments[0].type === 'Literal' &&
-          typeof argument.arguments[0].value === 'string'
+          argument
+          && argument.type === 'NewExpression'
+          && argument.callee.type === 'Identifier'
+          && argument.callee.name === 'Error'
+          && argument.arguments.length === 1
+          && argument.arguments[0].type === 'Literal'
+          && typeof argument.arguments[0].value === 'string'
         ) {
           const message = argument.arguments[0].value;
           const lowerMessage = message.toLowerCase();
