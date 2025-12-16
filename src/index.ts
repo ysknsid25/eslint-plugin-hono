@@ -17,35 +17,35 @@ const rules = {
 };
 
 const configs = {
-  recommended: {
-    plugins: {
-      hono: rules,
+  recommended: [
+    {
+      // plugins: { hono: rules }, // これを削除
+      rules: {
+        'hono/route-grouping': [
+          'error',
+          {
+            order: [
+              'use',
+              'all',
+              'get',
+              'post',
+              'put',
+              'patch',
+              'delete',
+              'options',
+              'on',
+            ],
+          },
+        ],
+        'hono/prefer-http-exception': 'warn',
+        'hono/param-name-mismatch': 'error',
+        'hono/no-multiple-next': 'error',
+        'hono/no-unused-context-response': 'error',
+        'hono/no-process-env': 'warn',
+        'hono/global-middleware-placement': 'warn',
+      },
     },
-    rules: {
-      'hono/route-grouping': [
-        'error',
-        {
-          order: [
-            'use',
-            'all',
-            'get',
-            'post',
-            'put',
-            'patch',
-            'delete',
-            'options',
-            'on',
-          ],
-        },
-      ],
-      'hono/prefer-http-exception': 'warn',
-      'hono/param-name-mismatch': 'error',
-      'hono/no-multiple-next': 'error',
-      'hono/no-unused-context-response': 'error',
-      'hono/no-process-env': 'warn',
-      'hono/global-middleware-placement': 'warn',
-    },
-  },
+  ],
 };
 
 export default {

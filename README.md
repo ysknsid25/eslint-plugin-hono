@@ -13,32 +13,67 @@ npm install -D eslint-plugin-hono@alpha
 To use the recommended configuration, create an `eslint.config.js` file in your project root and add the following:
 
 ```javascript
-import hono from 'eslint-plugin-hono';
+import globals from "globals";
+import pluginJs from "@eslint/js";
+import tseslint from "typescript-eslint";
+import hono from "eslint-plugin-hono";
 
 export default [
-  hono.configs.recommended,
-  {
-    // Optional: Override or add more rules here
-    rules: {
-      // 'hono/my-custom-rule': 'error',
+    {
+        plugins: {
+            hono: hono,
+        },
     },
-  },
+    pluginJs.configs.recommended,
+    ...tseslint.configs.recommended,
+    ...hono.configs.recommended,
+    {
+        files: ["**/*.{ts,tsx,cts,mts}"],
+        languageOptions: {
+            parser: tseslint.parser,
+            parserOptions: {
+                ecmaVersion: "latest",
+                sourceType: "module",
+                project: "./tsconfig.json",
+            },
+            globals: globals.node,
+        },
+    },
 ];
 ```
 
 If you want to apply the rules only to specific files, you can use the `files` property:
 
 ```javascript
-import hono from 'eslint-plugin-hono';
+import globals from "globals";
+import pluginJs from "@eslint/js";
+import tseslint from "typescript-eslint";
+import hono from "eslint-plugin-hono";
 
 export default [
-  {
-    files: ['src/**/*.ts'], // Adjust the glob pattern to your project structure
-    ...hono.configs.recommended, // Apply recommended rules to these files
-    rules: {
-      // Optional: Override or add more rules here for specific files
+    {
+        plugins: {
+            hono: hono,
+        },
     },
-  },
+    pluginJs.configs.recommended,
+    ...tseslint.configs.recommended,
+    ...hono.configs.recommended,
+    {
+        files: ["**/*.{ts,tsx,cts,mts}"],
+        languageOptions: {
+            parser: tseslint.parser,
+            parserOptions: {
+                ecmaVersion: "latest",
+                sourceType: "module",
+                project: "./tsconfig.json",
+            },
+            globals: globals.node,
+        },
+        rules: {
+            // custom rules
+        }
+    },
 ];
 ```
 
