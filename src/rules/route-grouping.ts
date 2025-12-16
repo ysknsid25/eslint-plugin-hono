@@ -93,10 +93,6 @@ export const routeGrouping = createRule<Options, "routeGroup" | "methodOrder">({
         }
 
         function getRoutePath(node: TSESTree.CallExpression): string | null {
-            // Find the innermost target method call to determine the path.
-            // Hono conventions: `app.get('/path', ...)` or `app.route('/path', ...)`
-            // We assume the first argument of the first target method in the chain is the path.
-            // Use a stack to search from inside out (left to right in method chain)
             const stack: TSESTree.CallExpression[] = [];
             let temp: TSESTree.Expression | TSESTree.Super = node;
             while (temp.type === "CallExpression") {
@@ -108,7 +104,6 @@ export const routeGrouping = createRule<Options, "routeGroup" | "methodOrder">({
                 }
             }
 
-            // Check from the innermost call
             while (stack.length > 0) {
                 const call = stack.pop()!;
                 if (
@@ -117,7 +112,6 @@ export const routeGrouping = createRule<Options, "routeGroup" | "methodOrder">({
                     order.includes(call.callee.property.name)
                 ) {
                     if (call.arguments.length > 0) {
-                        // Treat the first argument as the path
                         return sourceCode.getText(call.arguments[0]);
                     }
                 }
@@ -145,7 +139,6 @@ export const routeGrouping = createRule<Options, "routeGroup" | "methodOrder">({
 
                 const path = getRoutePath(callExpr);
                 if (!path) {
-                    // Ignore if no path is found (e.g. app.use(middleware) without path)
                     continue;
                 }
 
@@ -156,18 +149,14 @@ export const routeGrouping = createRule<Options, "routeGroup" | "methodOrder">({
                 });
             }
 
-            // Check for grouping
             const seenPaths = new Set<string>();
             let lastPath: string | null = null;
-
-            // Maintain a list of methods per path for ordering check
             const pathMethods = new Map<
                 string,
                 { name: string; node: TSESTree.MemberExpression }[]
             >();
 
             for (const route of routes) {
-                // Grouping Check
                 if (route.path !== lastPath) {
                     if (seenPaths.has(route.path)) {
                         context.report({
@@ -182,17 +171,13 @@ export const routeGrouping = createRule<Options, "routeGroup" | "methodOrder">({
                     lastPath = route.path;
                 }
 
-                // Ordering Check Setup
                 if (!pathMethods.has(route.path)) {
                     pathMethods.set(route.path, []);
                 }
                 pathMethods.get(route.path)!.push(...route.methods);
             }
 
-            // Perform Ordering Check
             for (const [path, methods] of pathMethods.entries()) {
-                // Check if the methods follow the defined order
-
                 for (let i = 0; i < methods.length - 1; i++) {
                     const current = methods[i];
                     const next = methods[i + 1];
@@ -202,13 +187,11 @@ export const routeGrouping = createRule<Options, "routeGroup" | "methodOrder">({
 
                     if (currentIndex === -1 || nextIndex === -1) continue;
 
-                    // Check against all subsequent methods to ensure strict ordering
                     for (let j = i + 1; j < methods.length; j++) {
                         const later = methods[j];
                         const laterIndex = order.indexOf(later.name);
 
                         if (laterIndex !== -1 && currentIndex > laterIndex) {
-                            // Report error on the method that should have come earlier
                             context.report({
                                 node: later.node,
                                 messageId: "methodOrder",
