@@ -60,7 +60,7 @@ ruleTester.run('no-unused-context-response', noUnusedContextResponse as unknown 
         };
         return helper();
       });
-    `
+    `,
   ],
   invalid: [
     // Unused c.json
@@ -119,6 +119,6 @@ ruleTester.run('no-unused-context-response', noUnusedContextResponse as unknown 
         });
       `,
       errors: [{ messageId: 'unusedContextResponse' }],
-    }
+    },
   ],
 });

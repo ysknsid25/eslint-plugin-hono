@@ -45,9 +45,9 @@ export const noUnusedContextResponse = createRule<Options, MessageIds>({
     }
 
     return {
-      FunctionDeclaration: enterFunction,
-      FunctionExpression: enterFunction,
-      ArrowFunctionExpression: enterFunction,
+      'FunctionDeclaration': enterFunction,
+      'FunctionExpression': enterFunction,
+      'ArrowFunctionExpression': enterFunction,
       'FunctionDeclaration:exit': exitFunction,
       'FunctionExpression:exit': exitFunction,
       'ArrowFunctionExpression:exit': exitFunction,

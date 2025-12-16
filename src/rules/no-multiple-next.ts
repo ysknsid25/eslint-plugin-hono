@@ -29,7 +29,7 @@ export const noMultipleNext = createRule<Options, MessageIds>({
     const funcStack: (typeof funcInfo)[] = [];
 
     return {
-      onCodePathStart(node) {
+      onCodePathStart(codePath, node) {
         let nextParamName: string | null = null;
 
         if (
