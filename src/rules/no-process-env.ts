@@ -23,14 +23,14 @@ export const noProcessEnv = createRule<Options, MessageIds>({
 
     function isHonoHandler(node: TSESTree.Node): boolean {
       if (
-        node.type !== 'ArrowFunctionExpression' &&
-        node.type !== 'FunctionExpression' &&
-        node.type !== 'FunctionDeclaration'
+        node.type !== 'ArrowFunctionExpression'
+        && node.type !== 'FunctionExpression'
+        && node.type !== 'FunctionDeclaration'
       ) {
         return false;
       }
       return node.params.some(
-        (param) => param.type === 'Identifier' && param.name === 'c'
+        param => param.type === 'Identifier' && param.name === 'c',
       );
     }
 
@@ -47,11 +47,11 @@ export const noProcessEnv = createRule<Options, MessageIds>({
       },
       MemberExpression(node: TSESTree.MemberExpression) {
         if (
-          inHonoHandler &&
-          node.object.type === 'Identifier' &&
-          node.object.name === 'process' &&
-          node.property.type === 'Identifier' &&
-          node.property.name === 'env'
+          inHonoHandler
+          && node.object.type === 'Identifier'
+          && node.object.name === 'process'
+          && node.property.type === 'Identifier'
+          && node.property.name === 'env'
         ) {
           context.report({
             node,

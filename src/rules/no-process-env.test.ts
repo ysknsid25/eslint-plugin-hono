@@ -80,5 +80,5 @@ ruleTester.run(
         errors: [{ messageId: 'noProcessEnv' }],
       },
     ],
-  }
+  },
 );
