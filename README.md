@@ -8,28 +8,76 @@
 npm install -D eslint-plugin-hono@alpha
 ```
 
-## Usage
+# eslint-plugin-hono
 
-Add `hono` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
+🔥 ESLint plugin for [Hono](https://hono.dev/)
 
-```json
-{
-    "plugins": [
-        "hono"
-    ],
-    "rules": {
-        "hono/route-grouping": ["error", {"order": ["use", "all", "get", "post", "put", "patch", "delete", "options", "on"]}],
-        "hono/prefer-http-exception": "warn",
-        "hono/param-name-mismatch": "error",
-        "hono/no-multiple-next": "error",
-        "hono/no-unused-context-response": "error",
-        "hono/no-process-env": "warn",
-        "hono/global-middleware-placement": "warn"
-    }
-}
+## Installation
+
+```bash
+npm install -D eslint-plugin-hono@alpha
+```
+
+## Usage (Flat Config)
+
+Create an `eslint.config.js` file in your project root and add the following configuration:
+
+```javascript
+import hono from 'eslint-plugin-hono';
+
+export default [
+  {
+    plugins: {
+      hono: hono,
+    },
+    rules: {
+      'hono/route-grouping': [
+        'error',
+        {
+          order: [
+            'use',
+            'all',
+            'get',
+            'post',
+            'put',
+            'patch',
+            'delete',
+            'options',
+            'on',
+          ],
+        },
+      ],
+      'hono/prefer-http-exception': 'warn',
+      'hono/param-name-mismatch': 'error',
+      'hono/no-multiple-next': 'error',
+      'hono/no-unused-context-response': 'error',
+      'hono/no-process-env': 'warn',
+      'hono/global-middleware-placement': 'warn',
+    },
+  },
+];
+```
+
+If you want to apply the rules only to specific files, you can use the `files` property:
+
+```javascript
+import hono from 'eslint-plugin-hono';
+
+export default [
+  {
+    files: ['src/**/*.ts'], // Adjust the glob pattern to your project structure
+    plugins: {
+      hono: hono,
+    },
+    rules: {
+      // ... your rules here
+    },
+  },
+];
 ```
 
 ## Rules
+
 
 | Rule | ⚠️ warn | 🚨 error | 🔧 fix |
 | :--- | :---: | :---: | :---: |
