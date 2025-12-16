@@ -8,51 +8,19 @@
 npm install -D eslint-plugin-hono@alpha
 ```
 
-# eslint-plugin-hono
-
-🔥 ESLint plugin for [Hono](https://hono.dev/)
-
-## Installation
-
-```bash
-npm install -D eslint-plugin-hono@alpha
-```
-
 ## Usage (Flat Config)
 
-Create an `eslint.config.js` file in your project root and add the following configuration:
+To use the recommended configuration, create an `eslint.config.js` file in your project root and add the following:
 
 ```javascript
 import hono from 'eslint-plugin-hono';
 
 export default [
+  hono.configs.recommended,
   {
-    plugins: {
-      hono: hono,
-    },
+    // Optional: Override or add more rules here
     rules: {
-      'hono/route-grouping': [
-        'error',
-        {
-          order: [
-            'use',
-            'all',
-            'get',
-            'post',
-            'put',
-            'patch',
-            'delete',
-            'options',
-            'on',
-          ],
-        },
-      ],
-      'hono/prefer-http-exception': 'warn',
-      'hono/param-name-mismatch': 'error',
-      'hono/no-multiple-next': 'error',
-      'hono/no-unused-context-response': 'error',
-      'hono/no-process-env': 'warn',
-      'hono/global-middleware-placement': 'warn',
+      // 'hono/my-custom-rule': 'error',
     },
   },
 ];
@@ -66,18 +34,15 @@ import hono from 'eslint-plugin-hono';
 export default [
   {
     files: ['src/**/*.ts'], // Adjust the glob pattern to your project structure
-    plugins: {
-      hono: hono,
-    },
+    ...hono.configs.recommended, // Apply recommended rules to these files
     rules: {
-      // ... your rules here
+      // Optional: Override or add more rules here for specific files
     },
   },
 ];
 ```
 
 ## Rules
-
 
 | Rule | ⚠️ warn | 🚨 error | 🔧 fix |
 | :--- | :---: | :---: | :---: |

@@ -6,7 +6,7 @@ import { noUnusedContextResponse } from './rules/no-unused-context-response';
 import { noProcessEnv } from './rules/no-process-env';
 import { globalMiddlewarePlacement } from './rules/global-middleware-placement';
 
-export const rules = {
+const rules = {
   'route-grouping': routeGrouping,
   'prefer-http-exception': preferHttpException,
   'param-name-mismatch': paramNameMismatch,
@@ -16,6 +16,39 @@ export const rules = {
   'global-middleware-placement': globalMiddlewarePlacement,
 };
 
+const configs = {
+  recommended: {
+    plugins: {
+      hono: { rules },
+    },
+    rules: {
+      'hono/route-grouping': [
+        'error',
+        {
+          order: [
+            'use',
+            'all',
+            'get',
+            'post',
+            'put',
+            'patch',
+            'delete',
+            'options',
+            'on',
+          ],
+        },
+      ],
+      'hono/prefer-http-exception': 'warn',
+      'hono/param-name-mismatch': 'error',
+      'hono/no-multiple-next': 'error',
+      'hono/no-unused-context-response': 'error',
+      'hono/no-process-env': 'warn',
+      'hono/global-middleware-placement': 'warn',
+    },
+  },
+};
+
 export default {
   rules,
+  configs,
 };
