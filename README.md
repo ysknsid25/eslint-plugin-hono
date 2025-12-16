@@ -43,9 +43,14 @@ Add `hono` to the plugins section of your `.eslintrc` configuration file. You ca
 
 ### hono/route-grouping
 
-Enforce grouping and ordering of routes by HTTP method.
+Enforce grouping and ordering of routes by HTTP method and Hono instance.
 
-This rule helps organize Hono routes by ensuring that routes for the same path are grouped together and that HTTP methods follow a consistent order. **Note**: `app.route()` calls are excluded from these grouping and ordering checks, allowing for flexible sub-application mounting without triggering rule violations.
+This rule enhances code organization by checking three things:
+1.  **Instance Grouping**: All route definitions for a specific Hono instance must be contiguous. Once you start defining routes for another instance, you cannot add more routes to the previous one.
+2.  **Path Grouping**: Routes for the same path (e.g., `/users`) must be grouped together.
+3.  **Method Order**: Within a path group, methods must follow a consistent order (e.g., `get` before `post`).
+
+**Note**: `app.route()` calls are excluded from these checks. Method chains (e.g., `.get(...).post(...)`) are exempt from method order checking.
 
 #### Options
 
@@ -71,7 +76,7 @@ This rule helps organize Hono routes by ensuring that routes for the same path a
 
 #### Examples
 
-**Incorrect**
+**Incorrect Path Grouping**
 
 ```typescript
 const app = new Hono();
@@ -97,12 +102,33 @@ app.post('/path1', (c) => c.text('post'));
 app.get('/path1', (c) => c.text('get'));
 ```
 
-**Correct Method Order**
+**Correct**
 
 ```typescript
 const app = new Hono();
 app.get('/path1', (c) => c.text('get'));
 app.post('/path1', (c) => c.text('post'));
+```
+
+**Incorrect Instance Grouping**
+```typescript
+const books = new Hono();
+const users = new Hono();
+
+books.get('/books', (c) => c.text('get books'));
+users.get('/users', (c) => c.text('get users'));
+books.post('/books', (c) => c.text('create book')); // Error: books routes should be together
+```
+
+**Correct**
+```typescript
+const books = new Hono();
+const users = new Hono();
+
+books.get('/books', (c) => c.text('get books'));
+books.post('/books', (c) => c.text('create book'));
+
+users.get('/users', (c) => c.text('get users'));
 ```
 
 ### hono/prefer-http-exception

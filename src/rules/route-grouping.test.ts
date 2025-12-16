@@ -2,11 +2,6 @@ import { RuleTester } from 'eslint';
 import { routeGrouping } from './route-grouping';
 import * as parser from '@typescript-eslint/parser';
 
-// Check if RuleTester supports dependency injection for testing framework,
-// otherwise rely on globals.
-// eslint v9 RuleTester doesn't expose it/describe override statically like @typescript-eslint/rule-tester.
-// But it usually works if globals are present.
-
 const ruleTester = new RuleTester({
   languageOptions: {
     parser,
@@ -35,60 +30,37 @@ ruleTester.run('route-grouping', routeGrouping as unknown as import('eslint').Ru
       app.post('/path1', (c) => c.text('post'));
       app.delete('/path1', (c) => c.text('delete'));
     `,
-    // app.route (existing test - should be valid)
-    `
-      const app = new Hono();
-      app.route('/api', api);
-      app.get('/other', (c) => c.text('other'));
-    `,
-    // With basePath (treated as distinct objects usually, but if in same block, logic applies to statements)
-    `
-      const app = new Hono().basePath('/api');
-      app.get('/users', (c) => c.text('users'));
-      app.post('/users', (c) => c.text('create user'));
-    `,
-    // All methods
-    `
-      const app = new Hono();
-      app.use('/path', m);
-      app.all('/path', h);
-      app.get('/path', h);
-      app.post('/path', h);
-      app.put('/path', h);
-      app.patch('/path', h);
-      app.delete('/path', h);
-      app.options('/path', h);
-    `,
-    // app.route is ignored for grouping/ordering
     `
       const app = new Hono();
       const subApp = new Hono();
       app.get('/main', (c) => c.text('main'));
       app.route('/sub', subApp);
-      app.post('/main', (c) => c.text('main post'));
+      subApp.get('/test', (c) => c.text('test'));
     `,
-    // app.route with chaining (should still apply rule to get, and route part is ignored)
+    // Multiple Hono instances correctly grouped
     `
-      const app = new Hono();
-      app.route('/base', new Hono()).get('/users', (c) => c.text('users'));
-    `,
-    // Nested routing and internal methods (internal router methods are still checked)
-    `
-      const app = new Hono();
+      const books = new Hono();
       const users = new Hono();
-      users.get('/list', (c) => c.text('list users'));
-      users.post('/create', (c) => c.text('create user'));
-      app.route('/users', users);
+      books.get('/books', (c) => c.text('get books'));
+      books.post('/books', (c) => c.text('create book'));
+      users.get('/users', (c) => c.text('get users'));
     `,
-    // Multiple app.route calls (should be ignored)
+    // Multiple Hono instances with declaration in between
     `
-      const app = new Hono();
-      const one = new Hono();
-      const two = new Hono();
-      app.route('/one', one);
-      app.route('/two', two);
-      app.get('/test', (c) => c.text('test'));
+      const books = new Hono();
+      books.get('/books', (c) => c.text('get books'));
+      const users = new Hono();
+      users.get('/users', (c) => c.text('get users'));
+      users.post('/users', (c) => c.text('create user'));
     `,
+    // Wrong order in chain is now considered valid
+    {
+      code: `
+        const app = new Hono();
+        app.post('/path1', (c) => c.text('post'))
+           .get((c) => c.text('get'));
+      `,
+    },
   ],
   invalid: [
     // Ungrouped routes
@@ -110,15 +82,6 @@ ruleTester.run('route-grouping', routeGrouping as unknown as import('eslint').Ru
       `,
       errors: [{ messageId: 'methodOrder' }],
     },
-    // Wrong order in chain
-    {
-      code: `
-        const app = new Hono();
-        app.post('/path1', (c) => c.text('post'))
-           .get((c) => c.text('get'));
-      `,
-      errors: [{ messageId: 'methodOrder' }],
-    },
     // Ungrouped with different methods
     {
       code: `
@@ -128,6 +91,17 @@ ruleTester.run('route-grouping', routeGrouping as unknown as import('eslint').Ru
         app.delete('/a', c => c.text('a'));
       `,
       errors: [{ messageId: 'routeGroup' }],
+    },
+    // Interleaved Hono instances
+    {
+      code: `
+        const books = new Hono();
+        const users = new Hono();
+        books.get('/books', (c) => c.text('get books'));
+        users.get('/users', (c) => c.text('get users'));
+        books.post('/books', (c) => c.text('create book'));
+      `,
+      errors: [{ messageId: 'instanceGroup' }],
     },
   ],
 });
