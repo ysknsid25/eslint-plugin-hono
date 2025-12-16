@@ -5,7 +5,7 @@
 ## Installation
 
 ```bash
-npm install -D eslint-plugin-hono
+npm install -D eslint-plugin-hono@alpha
 ```
 
 ## Usage
