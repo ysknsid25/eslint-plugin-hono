@@ -23,7 +23,8 @@ Add `hono` to the plugins section of your `.eslintrc` configuration file. You ca
         "hono/param-name-mismatch": "error",
         "hono/no-multiple-next": "error",
         "hono/no-unused-context-response": "error",
-        "hono/no-process-env": "warn"
+        "hono/no-process-env": "warn",
+        "hono/global-middleware-placement": "warn"
     }
 }
 ```
@@ -38,6 +39,7 @@ Add `hono` to the plugins section of your `.eslintrc` configuration file. You ca
 | [no-multiple-next](#hono-no-multiple-next) | | ✅ | |
 | [no-unused-context-response](#hono-no-unused-context-response) | | ✅ | |
 | [no-process-env](#hono-no-process-env) | ✅ | | |
+| [global-middleware-placement](#hono-global-middleware-placement) | ✅ | | |
 
 ### hono/route-grouping
 
@@ -251,6 +253,32 @@ app.get('/', (c) => {
   const apiKey = c.env.API_KEY;
   return c.text(apiKey);
 });
+```
+
+### hono/global-middleware-placement
+
+Enforce that global middleware is placed before route definitions.
+
+This rule ensures that global middleware (e.g., `app.use(logger)` or `app.use('*', logger)`) is defined immediately after the Hono instance is created, and before any routes (`app.get()`, `app.post()`, etc.) are defined. This improves code readability and predictability. Path-specific middleware (e.g., `app.use('/admin/*', adminAuth)`) is ignored by this rule to allow for logical grouping with the routes it applies to.
+
+#### Examples
+
+**Incorrect**
+
+```typescript
+const app = new Hono();
+app.get('/', (c) => c.text('Hello'));
+app.use('*', logger()); // Global middleware defined after a route.
+```
+
+**Correct**
+
+```typescript
+const app = new Hono();
+app.use('*', logger());
+app.get('/', (c) => c.text('Hello'));
+app.use('/admin', adminOnly()); // Path-specific middleware can be defined later.
+app.get('/admin/dashboard', (c) => c.text('Dashboard'));
 ```
 
 # License
