@@ -19,7 +19,6 @@ const rules = {
 const configs = {
   recommended: [
     {
-      // plugins: { hono: rules }, // これを削除
       rules: {
         'hono/route-grouping': [
           'error',
