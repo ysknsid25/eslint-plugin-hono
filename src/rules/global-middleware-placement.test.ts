@@ -86,5 +86,5 @@ ruleTester.run(
         errors: [{ messageId: 'placeMiddlewareBeforeRoutes' }],
       },
     ],
-  }
+  },
 );

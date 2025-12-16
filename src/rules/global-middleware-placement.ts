@@ -38,19 +38,19 @@ export const globalMiddlewarePlacement = createRule<Options, MessageIds>({
     return {
       VariableDeclarator(node) {
         if (
-          node.init &&
-          node.init.type === 'NewExpression' &&
-          node.init.callee.type === 'Identifier' &&
-          node.init.callee.name === 'Hono' &&
-          node.id.type === 'Identifier'
+          node.init
+          && node.init.type === 'NewExpression'
+          && node.init.callee.type === 'Identifier'
+          && node.init.callee.name === 'Hono'
+          && node.id.type === 'Identifier'
         ) {
           honoInstances.set(node.id.name, { node, routeDefined: false });
         }
       },
       CallExpression(node) {
         if (
-          node.callee.type !== 'MemberExpression' ||
-          node.callee.object.type !== 'Identifier'
+          node.callee.type !== 'MemberExpression'
+          || node.callee.object.type !== 'Identifier'
         ) {
           return;
         }
@@ -66,10 +66,10 @@ export const globalMiddlewarePlacement = createRule<Options, MessageIds>({
 
         if (propertyName === 'use') {
           const firstArg = node.arguments[0];
-          const isGlobal =
-            !firstArg ||
-            firstArg.type !== 'Literal' ||
-            (firstArg.type === 'Literal' && firstArg.value === '*');
+          const isGlobal
+            = !firstArg
+              || firstArg.type !== 'Literal'
+              || (firstArg.type === 'Literal' && firstArg.value === '*');
 
           if (isGlobal && instanceState.routeDefined) {
             context.report({
@@ -77,7 +77,8 @@ export const globalMiddlewarePlacement = createRule<Options, MessageIds>({
               messageId: 'placeMiddlewareBeforeRoutes',
             });
           }
-        } else if (routeDefiningMethods.has(propertyName)) {
+        }
+        else if (routeDefiningMethods.has(propertyName)) {
           instanceState.routeDefined = true;
         }
       },
