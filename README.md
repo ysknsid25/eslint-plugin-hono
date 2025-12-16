@@ -22,7 +22,8 @@ Add `hono` to the plugins section of your `.eslintrc` configuration file. You ca
         "hono/prefer-http-exception": "warn",
         "hono/param-name-mismatch": "error",
         "hono/no-multiple-next": "error",
-        "hono/no-unused-context-response": "error"
+        "hono/no-unused-context-response": "error",
+        "hono/no-process-env": "warn"
     }
 }
 ```
@@ -36,6 +37,7 @@ Add `hono` to the plugins section of your `.eslintrc` configuration file. You ca
 | [param-name-mismatch](#hono-param-name-mismatch) | | ✅ | |
 | [no-multiple-next](#hono-no-multiple-next) | | ✅ | |
 | [no-unused-context-response](#hono-no-unused-context-response) | | ✅ | |
+| [no-process-env](#hono-no-process-env) | ✅ | | |
 
 ### hono/route-grouping
 
@@ -220,6 +222,34 @@ app.get('/', (c) => {
 ```typescript
 app.get('/', (c) => {
   return c.json({ message: 'hello' });
+});
+```
+
+### hono/no-process-env
+
+Disallow the use of `process.env` in favor of `c.env`.
+
+This rule enforces the use of `c.env` for accessing environment variables within Hono handlers instead of `process.env`. Using `c.env` ensures your application remains platform-agnostic, as it abstracts away environment-specific details (e.g., Cloudflare Workers bindings vs. Node.js `process.env`).
+
+#### Examples
+
+**Incorrect**
+
+```typescript
+const app = new Hono();
+app.get('/', (c) => {
+  const apiKey = process.env.API_KEY; // Disallowed
+  return c.text(apiKey);
+});
+```
+
+**Correct**
+
+```typescript
+const app = new Hono();
+app.get('/', (c) => {
+  const apiKey = c.env.API_KEY;
+  return c.text(apiKey);
 });
 ```
 
