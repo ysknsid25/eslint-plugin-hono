@@ -1,6 +1,6 @@
 # eslint-plugin-hono
 
-🔥 ESLint plugin for [Hono](https://hono.dev/)
+🔥 ESLint plugin for [Hono](https://hono.dev/) and all Hono lovers
 
 ## ⚠️ Still in alpha version ⚠️
 
